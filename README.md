@@ -1,2 +1,2 @@
-# Finance-Projects
+# Finance-Project
 [Insert]
