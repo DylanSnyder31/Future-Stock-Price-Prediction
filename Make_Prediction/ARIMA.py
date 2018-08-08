@@ -1,6 +1,9 @@
 import csv
+import sys
+##
+##
 import math
-
+import itertools
 import pandas as pd
 import numpy as np
 
@@ -9,8 +12,8 @@ from pyramid.arima import auto_arima
 
 import statsmodels.api as sm
 
-
 from data_stationary import stationary
+from best_values import pdq_values
 
 class ARIMA_implementation():
 
@@ -28,19 +31,17 @@ class ARIMA_implementation():
         self.stationary_data = station.main()
 
         #split into training and testing data
+        self.training_data = self.stationary_data[:int(int(len(self.stationary_data))*.7)]
+        self.testing_data = self.stationary_data[int(int(len(self.stationary_data))*.7):]
+
         
-
     def fit_data(self):
+        '''Fit the model with the optimal p,d,q values'''
+        #Grid Seearch Method
+        best = pdq_values(self.training_data, self.testing_data)
+        p_value, d_value, q_value = best.main()
 
-        self.d = auto_arima(self.data, start_p=1, start_q=1, max_p=3, max_q=3, m=12,
-                          start_P=0, seasonal=False, d=1, D=1, trace=True,
-                          error_action='ignore',
-                          suppress_warnings=True,
-                          stepwise=True)
-
-        #print(self.stepwise_fit.summary())
-
-
+        sys.exit(0)
     def predict_future_values(self):
         '''
         Predict the future values
