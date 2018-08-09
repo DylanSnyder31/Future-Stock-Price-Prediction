@@ -1,7 +1,5 @@
 import csv
 import sys
-##
-##
 import math
 import itertools
 import pandas as pd
@@ -12,8 +10,8 @@ from pyramid.arima import auto_arima
 
 import statsmodels.api as sm
 
-from data_stationary import stationary
-from best_values import pdq_values
+from Make_Prediction.data_stationary import stationary
+from Make_Prediction.best_values import pdq_values
 
 class ARIMA_implementation():
 
@@ -25,7 +23,7 @@ class ARIMA_implementation():
         #Get the data
         self.read_data = pd.read_csv('C:\Programming\Projects\Current GitHub Project\-MAKE-A-NAME-\Data\individual_stocks_5yr\AAPL_data.csv')
         self.data = self.read_data['open']
-        ax = self.data.plot(label='Observed', figsize=(16, 8), color='#FF0000')
+
         #Make data stationary
         station = stationary(self.data)
         self.stationary_data = station.main()
@@ -38,12 +36,9 @@ class ARIMA_implementation():
         '''Fit the model with the optimal p,d,q values'''
         #Grid Seearch Method
         ## This part only needs to be done once, if the values are saved
-
-        # best = pdq_values(self.training_data, self.testing_data)
-        # best_values = best.main()
-
         '''
-        Apply the optimal values to the data
+        best = pdq_values(self.training_data, self.testing_data)
+        best_values = best.main()
         '''
 
         '''
@@ -52,20 +47,32 @@ class ARIMA_implementation():
         model = sm.tsa.statespace.SARIMAX(self.training_data, order = (0,2,0),
                                         enforce_stationarity=False, enforce_invertibility=False)
 
-        model_fit = model.fit(disp=0)
+        self.model_fit = model.fit(disp=0)
 
 
     def predict_future_values(self):
         '''
         Predict the future values
         '''
-        pred_uc = model_fit.get_forecast(steps=120)
+        pred_uc = self.model_fit.get_forecast(steps=120)
         pred_ci = pred_uc.conf_int()
 
-        a_diff_cumsum = self.training_data.cumsum()
-        t = a_diff_cumsum.fillna(0) + 2
+
+
+        '''
+        VISUALIZING IN MATPLOTLIB
+        '''
+        t = self.training_data.cumsum()
+        t = t.fillna(0) + 2
         t = 10**t
-        t = t * 0.6771419996315278
+
+        t = t /1.42
+        print(self.data)
+        pred_uc = pred_uc.conf_int(alpha=0.05)
+        print(pred_uc)
+
+
+
         ax = t.plot(label='Observed', figsize=(16, 8), color='#006699')
 
         #pred_uc.predicted_mean.plot(ax=ax, label='Forecast', color='#ff0066');
@@ -80,14 +87,5 @@ class ARIMA_implementation():
 
         sys.exit(0)
 
-
-    def update_fit(self):
-        updated_data = np.concatenate([self.data, self.next_25])
-
-
-
-if __name__ == '__main__':
-    a = ARIMA_implementation()
-    a.fit_data()
-    a.predict_future_values()
-    #a.update_fit()
+    def main(self):
+        pass

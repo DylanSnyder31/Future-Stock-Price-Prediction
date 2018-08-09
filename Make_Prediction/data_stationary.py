@@ -26,12 +26,12 @@ class stationary():
             return False
 
     def first_order_differencing(self, y):
-        diff = np.log(y).diff().dropna()
-        return diff
+        data = np.log(y).diff().dropna()
+        return data
 
     def second_order_differencing(self, y):
-        diff_2 = np.log(y).diff().diff(7).dropna()
-        return diff_2
+        data_2 = np.log(y).diff().diff(7).dropna()
+        return data_2
 
 
     def main(self):
