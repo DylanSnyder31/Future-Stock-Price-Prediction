@@ -25,7 +25,7 @@ class ARIMA_implementation():
         #Get the data
         self.read_data = pd.read_csv('C:\Programming\Projects\Current GitHub Project\-MAKE-A-NAME-\Data\individual_stocks_5yr\AAPL_data.csv')
         self.data = self.read_data['open']
-
+        ax = self.data.plot(label='Observed', figsize=(16, 8), color='#FF0000')
         #Make data stationary
         station = stationary(self.data)
         self.stationary_data = station.main()
@@ -34,47 +34,51 @@ class ARIMA_implementation():
         self.training_data = self.stationary_data[:int(int(len(self.stationary_data))*.7)]
         self.testing_data = self.stationary_data[int(int(len(self.stationary_data))*.7):]
 
-        
     def fit_data(self):
         '''Fit the model with the optimal p,d,q values'''
         #Grid Seearch Method
-        best = pdq_values(self.training_data, self.testing_data)
-        p_value, d_value, q_value = best.main()
+        ## This part only needs to be done once, if the values are saved
 
-        sys.exit(0)
+        # best = pdq_values(self.training_data, self.testing_data)
+        # best_values = best.main()
+
+        '''
+        Apply the optimal values to the data
+        '''
+
+        '''
+        HARD CODED IN!!!!  (CHANGE LATER)
+        '''
+        model = sm.tsa.statespace.SARIMAX(self.training_data, order = (0,2,0),
+                                        enforce_stationarity=False, enforce_invertibility=False)
+
+        model_fit = model.fit(disp=0)
+
+
     def predict_future_values(self):
         '''
         Predict the future values
         '''
+        pred_uc = model_fit.get_forecast(steps=120)
+        pred_ci = pred_uc.conf_int()
 
-        self.next_25 = self.d.predict(n_periods=2025)
-        print(self.next_25)
-        dataset = pd.DataFrame({'Column1':self.next_25})
-        #print(dataset)
+        a_diff_cumsum = self.training_data.cumsum()
+        t = a_diff_cumsum.fillna(0) + 2
+        t = 10**t
+        t = t * 0.6771419996315278
+        ax = t.plot(label='Observed', figsize=(16, 8), color='#006699')
 
-        fig = plt.figure()
-        ax1 = fig.add_subplot(111)
+        #pred_uc.predicted_mean.plot(ax=ax, label='Forecast', color='#ff0066');
 
-
-        a_diff_cumsum = self.data.cumsum()
-
-
-        rebuilt = a_diff_cumsum.fillna(0) + 2
-        rebuilt = 10**rebuilt
-        rebuilt = rebuilt * 0.6771419996315278
+        #ax.fill_between(pred_ci.index,
+                        #pred_ci.iloc[:, 0],
+                        #pred_ci.iloc[:, 1], color='#ff0066', alpha=.25);
 
 
-        a = dataset.cumsum()
-
-
-        r = a.fillna(0) + 2
-        r = 10**r
-        r = r * 0.6771419996315278
-        k = pd.concat([rebuilt,r], axis=1)
-        ax1.plot(k)
-
-        plt.legend(loc='upper left');
         plt.show()
+
+
+        sys.exit(0)
 
 
     def update_fit(self):

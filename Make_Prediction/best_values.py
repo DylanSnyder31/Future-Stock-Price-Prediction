@@ -41,13 +41,16 @@ class pdq_values():
             for d in self.d:
                 for q in self.q:
                     order = (p,d,q)
-                    mse = self.evaluate_arima_model(order)
-                    if mse < best_score:
-                        best_score, best_cfg = mse, order
-                    print('ARIMA%s MSE=%.3f' % (order,mse))
+                    try:
+                        mse = self.evaluate_arima_model(order)
+                        if mse < best_score:
+                            best_score, best_cfg = mse, order
+                        print('ARIMA%s MSE=%.3f' % (order,mse))
+                    except:
+                        continue
 
         print('Best ARIMA%s MSE=%.3f' % (best_cfg, best_score))
-
+        return best_cfg
     def main(self):
         self.evaluate_models()
         return 1,1,1
