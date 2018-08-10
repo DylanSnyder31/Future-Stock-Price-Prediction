@@ -1,9 +1,15 @@
 #Import necessary package for parsing the terminal
 import argparse
-
+import json
 import sys
 from Data.stock_choices import list_of_stocks
 from Make_Prediction.ARIMA import ARIMA_implementation
+
+'''
+TO DO:
+    1. MAKE ACCESSABLE TO THE WHOLE SMP500
+    2. Make a command to see what stocks have optimal values already in place
+'''
 class training_parser():
 
     def __init__(self):
@@ -55,15 +61,26 @@ class training_parser():
         self.start_training()
 
     def start_training(self):
-
-        ARIMA = ARIMA_implementation(self.stock_choice)
+        try:
+            ARIMA = ARIMA_implementation(self.stock_choice)
+        except AttributeError:
+            print("")
+            print("""Use a command:
+                    [--list show] prints off the list of available stocks
+                    [--choice *STOCK NAME*] allows you to train the model for a particular stock""")
+            sys.exit(0)
         self.best_order = ARIMA.main()
 
+        self.save_order()
     def save_order(self):
-        '''
-        SAVE THE BEST ORDER
-        '''
-
+        with open('C:\Programming\Projects\Current GitHub Project\-MAKE-A-NAME-\Data/best_parameters.json') as file_save:
+            try:
+                current_dictionary = json.load(file_save)
+            except json.decoderself.JSONDecodeError:
+                current_dictionary = {}
+        with open('C:\Programming\Projects\Current GitHub Project\-MAKE-A-NAME-\Data/best_parameters.json', 'w') as file_save:
+            current_dictionary[str(self.stock_choice)] = str(self.best_order)
+            json.dump(current_dictionary, file_save)
 
 if __name__ == "__main__":
     train = training_parser()
