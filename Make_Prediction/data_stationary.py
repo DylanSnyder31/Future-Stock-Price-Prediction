@@ -38,3 +38,19 @@ class stationary():
         while self.test_for_nonstationary():
             self.test_for_nonstationary()
         return self.data
+
+    def smp500_data(self, data):
+        data = data.drop(data.index[82949])
+        data = data.drop(data.index[165733])
+        data = data.drop(data.index[165855])
+        data = data.drop(data.index[205073])
+        data = data.drop(data.index[239828])
+        data = data.drop(data.index[434374])
+        data = data.drop(data.index[434496])
+        data = data.drop(data.index[478587])
+        data = data.drop(data.index[558205])
+        data = data.drop(data.index[581897])
+        data = data.drop(data.index[598226])
+
+        cleaned_data = data.astype(np.float64)
+        return cleaned_data
