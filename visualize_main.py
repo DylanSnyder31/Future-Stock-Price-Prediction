@@ -1,6 +1,7 @@
 import argparse
 import sys
 from Data.stock_choices import list_of_stocks
+from Visualize_Prediction.make_visualization import visualization
 '''
 Take the values the user inputed, and output the correct grpah
 
@@ -55,7 +56,9 @@ class visualize():
             sys.exit(0)
 
         return self.stock_choice, self.type
+
 if __name__ == "__main__":
     start_visualize = visualize()
     stock_choice, type = start_visualize.parser()
-    print(stock_choice, type)
+
+    show_visualization = visualization(stock_choice, type)

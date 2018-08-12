@@ -71,6 +71,8 @@ class ARIMA_implementation():
         self.best_values = best.main()
         return self.best_values
 
+    def get_data(self):
+        return self.stationary_data, self.data
 
 
     def main(self):
