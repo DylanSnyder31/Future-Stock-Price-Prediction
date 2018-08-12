@@ -1,3 +1,8 @@
+'''
+This is a list of the acceptable stocks;
+this includes the SMP500 as a whole
+'''
+
 list_of_stocks = ['MMM','ABT','ABBV','ACN','ATVI','AYI','ADBE','AMD','AAP','AES','AET',
     'AMG','AFL','A','APD','AKAM','ALK','ALB','ARE','ALXN','ALGN','ALLE',
     'AGN','ADS','LNT','ALL','GOOGL','GOOG','MO','AMZN','AEE','AAL','AEP',
