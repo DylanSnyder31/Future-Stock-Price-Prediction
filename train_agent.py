@@ -18,7 +18,6 @@ class training_parser():
         #Gets the list of stock names
         self.list_of_stocks = list_of_stocks
 
-        self.create_parser()
 
     def create_parser(self):
         self.training_parser = argparse.ArgumentParser()
@@ -35,7 +34,10 @@ class training_parser():
         #Allow the user to see what stocks already have optimal parameters trained for
         self.training_parser.add_argument('--trained')
 
+
         self.args = self.training_parser.parse_args()
+
+
 
         self.check_arguments()
 
@@ -74,11 +76,8 @@ class training_parser():
             print('%s'%(current_dictionary))
             sys.exit()
 
-        self.start_training()
-
-    def start_training(self):
         try:
-            ARIMA = ARIMA_implementation(self.stock_choice)
+            self.start_training(self.stock_choice)
         except AttributeError:
             print("")
             print("""Use a command:
@@ -86,6 +85,10 @@ class training_parser():
                     [--trained show] prints the stocks that already have been trainined for
                     [--choice *STOCK NAME*] allows you to train the model for a particular stock""")
             sys.exit(0)
+    def start_training(self, stock_choice):
+        self.stock_choice = stock_choice
+        ARIMA = ARIMA_implementation(self.stock_choice)
+
         self.best_order = ARIMA.main()
 
         self.save_order()
@@ -99,5 +102,9 @@ class training_parser():
             current_dictionary[str(self.stock_choice)] = str(self.best_order)
             json.dump(current_dictionary, file_save)
 
+    def main(self):
+        self.create_parser()
+
 if __name__ == "__main__":
     train = training_parser()
+    train.main()

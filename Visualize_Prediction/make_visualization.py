@@ -2,13 +2,13 @@ from train_agent import training_parser
 import json
 from Make_Prediction.ARIMA import ARIMA_implementation
 import sys
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
 
 '''
-To-Do:
-    1. Training from visualization does not work
-        A. Because the parsers believe no parser has been used
-            I. The fact is that the parser --choice [stock] HAS been used
-'''        
+To-DO:
+    1. Make number of predictions an argument for the user
+'''
 class visualization():
 
     def __init__(self, stock_choice, type):
@@ -33,7 +33,14 @@ class visualization():
         for i in current_dictionary:
             if str(i) == str(self.stock_choice):
                 trained = True
-                optimal_values = current_dictionary[i]
+                optimal_values_string = current_dictionary[i]
+
+                p = int(optimal_values_string[1])
+                d = int(optimal_values_string[4])
+                q = int(optimal_values_string[7])
+
+                optimal_values = (p,d,q)
+
                 break
 
         if trained == False:
@@ -43,7 +50,7 @@ class visualization():
 
             if answer.lower() == "y" or answer.lower() == "yes":
                 train_stock = training_parser()
-                train_stock.start_training()
+                train_stock.start_training(self.stock_choice)
 
             elif answer.lower() == "n" or answer.lower() == "no":
                 sys.exit(0)
@@ -65,16 +72,29 @@ class visualization():
         '''
         returns predicted values
         '''
+        number_of_predictions = 60
 
+        updated_data = [x for x in stationary_data]
+        predictions = []
+        for i in range(number_of_predictions):
+            model = sm.tsa.statespace.SARIMAX(updated_data, order = optimal_values)
+            model_fit = model.fit(disp=0)
+            forecast = model_fit.forecast()[0]
+            updated_data.append(forecast)
+            predictions.append(forecast)
 
+        return predictions, updated_data
 
-    def show_graph(self):
+    def show_graph(self, predicted_values, data_with_predictions):
         '''
         Shows the graph
         '''
+        plt.plot(data_with_predictions)
+        plt.plot(predicted_values)
+        plt.show()
 
     def main(self):
         optimal_values, stationary_data, data = self.get_stock_values()
-        print("SDFHSDKJFHLKJSDF")
-        sys.exit(0)
-        predicted_values = self.predict_future_values(optimal_values, stationary_data, data)
+        predicted_values, data_with_predictions = self.predict_future_values(optimal_values, stationary_data, data)
+
+        self.show_graph(predicted_values, data_with_predictions)
