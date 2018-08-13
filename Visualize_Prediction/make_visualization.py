@@ -1,5 +1,6 @@
 import sys
 import json
+import warnings
 
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
@@ -12,6 +13,8 @@ class visualization():
     The goal of this class is to visualize the data
     '''
     def __init__(self, stock_choice, type):
+        warnings.filterwarnings("ignore")
+
         self.stock_choice = stock_choice
         self.type = type
 
@@ -79,9 +82,13 @@ class visualization():
         '''
         The goal of this function is to get and return predicted values
         '''
-        self.data_length = len(data)
         self.data = data
-        self.number_of_predictions = 600
+        if self.type == "simple":
+            self.show_graph_simple()
+            sys.exit(0)
+
+        self.data_length = len(data)
+        self.number_of_predictions = 172
 
         updated_data = [x for x in stationary_data]
         predictions = []
@@ -96,9 +103,9 @@ class visualization():
 
         return predictions, updated_data
 
-    def show_graph(self, predicted_values, data_with_predictions):
+    def show_graph_forecast(self, predicted_values, data_with_predictions):
         '''
-        Shows the graph
+        The goal of this function is to show to graph, with the forecasted values
         '''
         predicted_data = []
         full_data = [x for x in self.data]
@@ -107,12 +114,29 @@ class visualization():
             value = (full_data[index] + predicted_values[i])
             full_data.append(value)
             predicted_data.append(value)
+
+        plt.plot(full_data, color="red", label = "Forecasted Data")
+        plt.plot(self.data, color="blue", label = "Previous Data")
+        plt.legend(loc = "upper left")
+        plt.show()
+
+    def show_graph_simple(self):
+        '''
+        The goal of this function is the show to graph, with only the normal data
+        '''
+        # Add the simple data
         plt.plot(self.data)
-        plt.plot(predicted_data)
+
+        plt.xlabel('Progress of Time')
+        plt.ylabel('Price (USD)')
+        plt.title("%s Stock Price" %(self.stock_choice))
+
+        plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+
         plt.show()
 
     def main(self):
         optimal_values, stationary_data, data = self.get_stock_values()
         predicted_values, data_with_predictions = self.predict_future_values(optimal_values, stationary_data, data)
 
-        self.show_graph(predicted_values, data_with_predictions)
+        self.show_graph_forecast(predicted_values, data_with_predictions)

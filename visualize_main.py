@@ -26,7 +26,7 @@ class visualize():
         stock_choice, type = self.data_from_arguments()
         return stock_choice, type
 
-    def data_from_arguments(self):
+    def data_from_arguments(self):  
         '''
         The goal of this function is to read the input, and know what to do next
         '''
