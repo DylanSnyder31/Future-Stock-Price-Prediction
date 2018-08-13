@@ -29,7 +29,7 @@ This visualizes the past stock price history, without the forecasted price
 This displays the past data along with the forecasted price history of the stock
 
 ## Conclusion
-My model predicted the future prices for stocks in a very general sense, strongly. I believe this is not because of the model itself, but because of the market performence during and after the provided data. My model was mostly unsuccessful in ignoring the noise, even with my best efforts to stationize the data. This noise lead the agent to believe the market only goes up, and that is easily observed through the forecasted prices: up and to the right almost all the time. 
+My model predicted the future prices for stocks in a very general sense, strongly. I believe this is not because of the model itself, but because of the market performance during and after the provided data. My model was mostly unsuccessful in ignoring the noise, even with my best efforts to station the data. This noise lead the agent to believe the market only goes up, and that is easily observed through the forecasted prices: up and to the right almost all the time.
 #### What could be improved 
 As previously stated in my conclusion, the data I provided allows the agent to learn a false positive about the market; it only goes up. To improve this one could collect more data that encompasses a severe market correction.
 ## Licence
